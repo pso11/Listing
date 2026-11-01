@@ -1,0 +1,24 @@
+digraph List
+{
+rankdir = LR;
+   0 -> 1;
+   0 [shape = record, label = " index = 0 | data = 10928 | {next = 1 | prev = 1} "];
+   1 -> 0;
+   1 [shape = record, label = " index = 1 | data = 20 | {next = 0 | prev = 0} "];
+   2 -> 3;
+   2 [shape = record, label = " index = 2 | data = 10928 | {next = 3 | prev = -1} "];
+   3 -> 4;
+   3 [shape = record, label = " index = 3 | data = 10928 | {next = 4 | prev = -1} "];
+   4 -> 5;
+   4 [shape = record, label = " index = 4 | data = 10928 | {next = 5 | prev = -1} "];
+   5 -> 6;
+   5 [shape = record, label = " index = 5 | data = 10928 | {next = 6 | prev = -1} "];
+   6 -> 7;
+   6 [shape = record, label = " index = 6 | data = 10928 | {next = 7 | prev = -1} "];
+   7 -> 8;
+   7 [shape = record, label = " index = 7 | data = 10928 | {next = 8 | prev = -1} "];
+   8 -> 9;
+   8 [shape = record, label = " index = 8 | data = 10928 | {next = 9 | prev = -1} "];
+   9 -> 9;
+   9 [shape = record, label = " index = 9 | data = 10928 | {next = 9 | prev = -1} "];
+}
