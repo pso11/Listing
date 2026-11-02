@@ -66,7 +66,6 @@ error_t list_destroy(struct list_t* list)
     list -> node_array = NULL;
     list = NULL;
 
-
     return error_status;
 }
 

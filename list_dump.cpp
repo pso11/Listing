@@ -1,9 +1,5 @@
-// завести файл с счётчиком
-// создать папки при каждом запуске
-// сделать html логи
-// положить в папки обычный лог и html
-// очистить имя папки
-// поставить проверку на _mkdir
+\\ норм верификатор
+\\ рид ми
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,22 +30,20 @@ error_t list_veryficator(struct list_t* list)
     return OK;
 }
 
-void list_dump(const struct list_t* list)
+void list_dump(struct list_t* list)
 {
-    char* folder_name = define_folder_name("dump_num", "main_");
+    list -> dump_num = define_run_number("dump_num");
 
-    char txt_log_name[50] = {};
-    snprintf(txt_log_name, sizeof(txt_log_name), "%s%s", folder_name, ".log");
-
-    FILE* file = fopen(txt_log_name, "a+");
     printf("Hiiii!!!! LOOK AT MAIN.LOG!!!\n");
 
+    FILE* file = fopen("main.log", "a+");
     fwrite_txt_dump(list, file);
-
-    fwrite_graph_dump(list, file);
-
-    free(folder_name);
     fclose(file);
+
+    file = fopen("html_log.html", "a+");
+    fwrite_html_dump(list, file);
+    fclose(file);
+
 }
 
 void fwrite_stars(size_t number, FILE* file)
@@ -65,7 +59,116 @@ int compare_doubles(double var1, double var2)
 
 void fwrite_txt_dump(const struct list_t* list, FILE* file)
 {
-    struct error error_array[] =
+    fprintf_beautiful(file, "\nMEET ERROR IN YOUR PROGRAMM READ ALL INFORMATION DOWN\n");
+    fprintf(file,"\nDUMP %d\n", list -> dump_num);
+
+    fprintf_error_inf(list, file);
+
+
+    fprintf_beautiful(file, "\nEND OF OUR MESSAGE\n");
+    fputc('\n', file);
+}
+
+void fwrite_graph_dump(const struct list_t* list)
+{
+    FILE* graph_file = fopen("graphic_dump.txt", "w");
+
+    fprintf(graph_file, "digraph List\n{\n");
+
+    fprintf(graph_file, "rankdir = LR;\n");
+    for (int size = 0; size < list -> size; size++)
+    {
+        fprintf(graph_file, "   %d -> %d;\n", size, list -> node_array[size].next);
+        if (DATA_IS_POISON(list -> node_array[size].data, POISON))
+        {
+            if (size == 0)
+                fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %s| {next = %d | prev = %d} \"];\n",
+                        size, size, "POISON", list -> node_array[size].next, list -> node_array[size].prev);
+            else
+                fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %s| {next = %d | prev = %d} \"];\n",
+                        size, size, "FREE", list -> node_array[size].next, list -> node_array[size].prev);
+        }
+        else
+            fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %d | {next = %d | prev = %d} \"];\n",
+                      size, size, list -> node_array[size].data, list -> node_array[size].next, list -> node_array[size].prev);
+    }
+
+    fprintf(graph_file, "}\n");
+    fclose(graph_file);
+
+    char dot_cmd[MAX_PATH_LEN] = {};
+    snprintf(dot_cmd, sizeof(dot_cmd), "dot \"graphic_dump.txt\" -Tpng -o grapic_dump_%d.png", list -> dump_num);
+
+    system(dot_cmd);
+}
+
+size_t define_run_number(const char* file_name)
+{
+    size_t run_number = 1;
+
+    FILE* file = fopen(file_name, "r");
+    if (file == NULL)
+    {
+        file = fopen(file_name, "w+");
+        fprintf(file, "%d", run_number + 1);
+        fclose(file);
+        return 1;
+    }
+    else
+        fscanf(file, "%d", &run_number);
+    fclose(file);
+
+    file = fopen(file_name, "w+");
+    fprintf(file, "%d", run_number + 1);
+    fclose(file);
+    return run_number;
+}
+
+void define_log_file(void)
+{
+    char* project_dir_path = (char*)calloc(MAX_PATH_LEN, sizeof(char));
+    _getcwd(project_dir_path, MAX_PATH_LEN);
+
+    char* log_dir_path = (char*)calloc(MAX_PATH_LEN, sizeof(char));
+    sprintf(log_dir_path, "%s\\LOG", project_dir_path);
+
+    _mkdir(log_dir_path);
+    _chdir(log_dir_path);
+
+    size_t run_number = define_run_number("run_number");
+    char log_name[MAX_FILE_NAME_LEN] = {};
+    snprintf(log_name, sizeof(log_name), "log_%d", run_number);
+
+    _mkdir(log_name);
+    _chdir(log_name);
+}
+
+void fwrite_html_dump(const struct list_t* list, FILE* file)
+{
+    fprintf(file, "<!DOCTYPE html>\n<html>\n<pre style = \"font-size: 20px;\">");
+
+    fprintf_list_data(list, file);
+    fwrite_graph_dump(list);
+
+    fputc('\n', file);
+    fprintf(file, "Image:\n");
+    fprintf(file, "<img src =\"grapic_dump_%d.png\">", list -> dump_num);
+
+    fprintf(file, "</pre>\n</html>");
+}
+
+void fprintf_beautiful(FILE* file, const char* string)
+{
+    fputc('\n', file);
+    fwrite_stars(25, file);
+    fprintf(file,"%s", string);
+    fwrite_stars(25, file);
+    fputc('\n', file);
+}
+
+void fprintf_error_inf(const struct list_t* list, FILE* file)
+{
+     struct error error_array[] =
     {
         {"Everything is OK", OK},
         {"NULL pointer of node_array", LIST_NULL_POINTER},
@@ -80,13 +183,6 @@ void fwrite_txt_dump(const struct list_t* list, FILE* file)
         {"Wrong value of prev member in node structure", WRONG_PREV},
         {"Calloc didn't work", BAD_ALLOCATION}
     };
-
-    fputc('\n', file);
-    fwrite_stars(25, file);
-    fprintf(file,"\nMEET ERROR IN YOUR PROGRAMM READ ALL INFORMATION DOWN\n");
-    fwrite_stars(25, file);
-    fputc('\n', file);
-
     size_t structure = 0;
     while (structure < sizeof(error_array) / sizeof(error_array[0]))
     {
@@ -95,15 +191,21 @@ void fwrite_txt_dump(const struct list_t* list, FILE* file)
         structure++;
     }
 
-    fprintf(file, "Error code: [%d] : <%s> called in: <%s()>:%d in function: <%s> : <%s>:%d\n\n"
-                  "YOUR LIST: list_t %s = [%p] created by %s():\n"
-                  "size = [%d]\n"
-                  "node_array = [%p]\n"
+    fprintf(file, "Error code: [%d] : <%s> called in: %s:%d in function: <%s> : <%s>:%d\n\n",
+                   list -> error_code, error_array[structure].description, list -> call_file,
+                   list -> call_line, list -> function, list -> file, list -> line);
+}
+
+void fprintf_list_data(const struct list_t* list, FILE* file)
+{
+    fprintf(file, "YOUR LIST: list_t %s = [%p] created by %s():\n"
+                  "size = [%d], node_array = [%p]\n"
                   "head_index = %d head = %d\n"
-                  "free_index = %d\n",
-                   list -> error_code, error_array[structure].description, list -> call_file, list -> call_line,
-                   list -> function, list -> file, list -> line, list -> val_name, list, list -> birth_function,
-                   list -> size, list -> node_array, list -> head, list -> node_array[list -> head].data, list -> free);
+                  "free_index = %d\n"
+                  "POISON = FREE = %d\n",
+                   list -> val_name, list, list -> birth_function,
+                   list -> size, list -> node_array, list -> head, list -> node_array[list -> head].data, list -> free, POISON);
+
     fflush(file);
 
     fprintf(file,"%8s", "INDEX");
@@ -136,82 +238,8 @@ void fwrite_txt_dump(const struct list_t* list, FILE* file)
         fprintf(file, "%7d", list -> node_array[size].prev);
     fputc('\n', file);
 
-    fputc('\n', file);
-    fwrite_stars(25, file);
-    fprintf(file,"\nEND OF OUR MESSAGE\n");
-    fwrite_stars(25, file);
-    fputc('\n', file);
-    fputc('\n', file);
 }
 
-void fwrite_graph_dump(const struct list_t* list, FILE* file)
-{
-    FILE* graph_file = fopen("graphic_dump.txt", "w");
-
-    fprintf(graph_file, "digraph List\n{\n");
-
-    fprintf(graph_file, "rankdir = LR;\n");
-    for (int size = 0; size < list -> size; size++)
-    {
-        fprintf(graph_file, "   %d -> %d;\n", size, list -> node_array[size].next);
-        fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %d | {next = %d | prev = %d} \"];\n",
-                      size, size, list -> node_array[size].data, list -> node_array[size].next, list -> node_array[size].prev);
-    }
-
-    system("dot \"graphic_dump.txt\" -Tpng -o \"grapic_dump.png\"");
-
-    fprintf(graph_file, "}\n");
-    fclose(graph_file);
-}
-
-char* define_folder_name(const char* file_name, const char* string_name)
-{
-    size_t run_number = define_run_number(file_name);
-
-    char* folder_name = (char*)calloc(MAX_PATH_LEN, sizeof(char));
-    sprintf(folder_name, "%s%d", string_name, run_number);
-
-    return folder_name;
-}
-
-size_t define_run_number(const char* file_name)
-{
-    size_t run_number = 1;
-
-    FILE* file = fopen(file_name, "r");
-    if (file == NULL)
-    {
-        file = fopen(file_name, "w+");
-        fprintf(file, "%d", run_number + 1);
-        fclose(file);
-        return 1;
-    }
-    else
-        fscanf(file, "%d", &run_number);
-    fclose(file);
-
-    file = fopen(file_name, "w+");
-    fprintf(file, "%d", run_number + 1);
-    fclose(file);
-    return run_number;
-}
-
-void define_log_file(void)
-{
-    char* project_dir_path = (char*)calloc(MAX_PATH_LEN, sizeof(char));
-    _getcwd(project_dir_path, sizeof(project_dir_path));
-
-    char* log_dir_path = (char*)calloc(MAX_PATH_LEN, sizeof(char));
-    sprintf(log_dir_path, "%s\\LOG", project_dir_path);
-
-    _mkdir(log_dir_path);
-    _chdir(log_dir_path);
-
-    char* folder_name = define_folder_name("run_number", "log_");
-
-    _chdir(folder_name);
-    free(folder_name);
-}
 #endif
 
 

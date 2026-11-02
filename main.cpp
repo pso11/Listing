@@ -8,7 +8,7 @@ int main(void)
 {
     error_t error_status = OK;
     struct list_t list = {};
-
+    DUMP_INIT(list);
     DEFINE_LOG_FILE();
 
     error_status = list_init(&list, 10);

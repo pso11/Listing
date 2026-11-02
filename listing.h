@@ -49,6 +49,7 @@ struct list_t
         error_t error_code;
         char* project_dir_path;
         char* log_dir_path;
+        size_t dump_num;
     #endif
     size_t head;
     size_t tail;
@@ -58,13 +59,18 @@ struct list_t
 };
 
 #ifdef LIST_DEBUG
-    void list_dump(const struct list_t* list);
+    void list_dump(struct list_t* list);
     void fwrite_txt_dump(const struct list_t* list, FILE* file);
-    void fwrite_graph_dump(const struct list_t* list, FILE* file);
+    void fwrite_graph_dump(const struct list_t* list);
+    void fwrite_html_dump(const struct list_t* list, FILE* file);
+    char* create_file_buffer(const char* file_name, FILE* file);
     void define_log_file(void);
-    char* define_folder_name(const char* file_name, const char* string_name);
     size_t define_run_number(const char* file_name);
     void fwrite_stars(size_t number, FILE* file);
+    void fprintf_beautiful(FILE* file_name, const char* string);
+    void fprintf_error_inf(const struct list_t* list, FILE* file);
+    void fprintf_list_data(const struct list_t* list, FILE* file);
+
     struct error
     {
         const char* description;
@@ -72,6 +78,7 @@ struct list_t
     };
     error_t list_veryficator(struct list_t* list);
     #define MAX_PATH_LEN 100
+    #define MAX_FILE_NAME_LEN 15
 
     #define FILL_DBG(error)                \
         list -> line       = __LINE__ ;    \
@@ -89,14 +96,15 @@ struct list_t
             if (error_status)                       \
             {                                       \
                 list.error_code = error_status;     \
-                list.birth_function = __FUNCTION__; \
                 list.call_file = __FILE__ ;         \
                 list.call_line = __LINE__;          \
-                list.val_name = #list;              \
                 list_dump(&list);                   \
                 list_destroy(&list);                \
                 return 0;                           \
             }
+    #define DUMP_INIT(list)                     \
+            list.val_name = #list;              \
+            list.birth_function = __FUNCTION__; \
 
     #define DEFINE_LOG_FILE() define_log_file()
 #else
@@ -104,6 +112,7 @@ struct list_t
     #define LIST_VERYFICATION(list)     ;
     #define ASSERT(list, error_status)  ;
     #define DEFINE_LOG_FILE()           ;
+    #define DUMP_INIT(list)             ;
 #endif
 
 error_t list_init(struct list_t* list, int size);
