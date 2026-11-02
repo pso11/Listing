@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <TXLib.h>
 
 #include "listing.h"
 
@@ -9,6 +8,9 @@ int main(void)
 {
     error_t error_status = OK;
     struct list_t list = {};
+
+    DEFINE_LOG_FILE();
+
     error_status = list_init(&list, 10);
     ASSERT(list, error_status);
     list_dump(&list);

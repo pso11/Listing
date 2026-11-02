@@ -58,8 +58,14 @@ error_t list_destroy(struct list_t* list)
 
     free(list -> node_array);
 
+    #ifdef LIST_DEBUG
+    free(list -> project_dir_path);
+    free(list -> log_dir_path);
+    #endif
+
     list -> node_array = NULL;
     list = NULL;
+
 
     return error_status;
 }

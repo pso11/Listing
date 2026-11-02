@@ -47,6 +47,8 @@ struct list_t
         const char* birth_function;
         const char* val_name;
         error_t error_code;
+        char* project_dir_path;
+        char* log_dir_path;
     #endif
     size_t head;
     size_t tail;
@@ -59,6 +61,9 @@ struct list_t
     void list_dump(const struct list_t* list);
     void fwrite_txt_dump(const struct list_t* list, FILE* file);
     void fwrite_graph_dump(const struct list_t* list, FILE* file);
+    void define_log_file(void);
+    char* define_folder_name(const char* file_name, const char* string_name);
+    size_t define_run_number(const char* file_name);
     void fwrite_stars(size_t number, FILE* file);
     struct error
     {
@@ -66,6 +71,7 @@ struct list_t
         error_t error_name;
     };
     error_t list_veryficator(struct list_t* list);
+    #define MAX_PATH_LEN 100
 
     #define FILL_DBG(error)                \
         list -> line       = __LINE__ ;    \
@@ -91,10 +97,13 @@ struct list_t
                 list_destroy(&list);                \
                 return 0;                           \
             }
+
+    #define DEFINE_LOG_FILE() define_log_file()
 #else
-    #define FILL_DBG(error) ;
-    #define LIST_VERYFICATION(list) ;
-    #define ASSERT(list, error_status) ;
+    #define FILL_DBG(error)             ;
+    #define LIST_VERYFICATION(list)     ;
+    #define ASSERT(list, error_status)  ;
+    #define DEFINE_LOG_FILE()           ;
 #endif
 
 error_t list_init(struct list_t* list, int size);

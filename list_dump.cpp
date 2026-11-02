@@ -2,10 +2,14 @@
 // создать папки при каждом запуске
 // сделать html логи
 // положить в папки обычный лог и html
+// очистить имя папки
+// поставить проверку на _mkdir
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <direct.h>
+#include <io.h>
 
 #include "listing.h"
 
@@ -32,13 +36,19 @@ error_t list_veryficator(struct list_t* list)
 
 void list_dump(const struct list_t* list)
 {
+    char* folder_name = define_folder_name("dump_num", "main_");
+
+    char txt_log_name[50] = {};
+    snprintf(txt_log_name, sizeof(txt_log_name), "%s%s", folder_name, ".log");
+
+    FILE* file = fopen(txt_log_name, "a+");
     printf("Hiiii!!!! LOOK AT MAIN.LOG!!!\n");
-    FILE* file = fopen("main.log", "a+");
 
     fwrite_txt_dump(list, file);
 
     fwrite_graph_dump(list, file);
 
+    free(folder_name);
     fclose(file);
 }
 
@@ -152,6 +162,55 @@ void fwrite_graph_dump(const struct list_t* list, FILE* file)
 
     fprintf(graph_file, "}\n");
     fclose(graph_file);
+}
+
+char* define_folder_name(const char* file_name, const char* string_name)
+{
+    size_t run_number = define_run_number(file_name);
+
+    char* folder_name = (char*)calloc(MAX_PATH_LEN, sizeof(char));
+    sprintf(folder_name, "%s%d", string_name, run_number);
+
+    return folder_name;
+}
+
+size_t define_run_number(const char* file_name)
+{
+    size_t run_number = 1;
+
+    FILE* file = fopen(file_name, "r");
+    if (file == NULL)
+    {
+        file = fopen(file_name, "w+");
+        fprintf(file, "%d", run_number + 1);
+        fclose(file);
+        return 1;
+    }
+    else
+        fscanf(file, "%d", &run_number);
+    fclose(file);
+
+    file = fopen(file_name, "w+");
+    fprintf(file, "%d", run_number + 1);
+    fclose(file);
+    return run_number;
+}
+
+void define_log_file(void)
+{
+    char* project_dir_path = (char*)calloc(MAX_PATH_LEN, sizeof(char));
+    _getcwd(project_dir_path, sizeof(project_dir_path));
+
+    char* log_dir_path = (char*)calloc(MAX_PATH_LEN, sizeof(char));
+    sprintf(log_dir_path, "%s\\LOG", project_dir_path);
+
+    _mkdir(log_dir_path);
+    _chdir(log_dir_path);
+
+    char* folder_name = define_folder_name("run_number", "log_");
+
+    _chdir(folder_name);
+    free(folder_name);
 }
 #endif
 

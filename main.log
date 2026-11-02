@@ -679,3 +679,43 @@ free_index = 2
 END OF OUR MESSAGE
 *************************
 
+
+*************************
+MEET ERROR IN YOUR PROGRAMM READ ALL INFORMATION DOWN
+*************************
+Error code: [0] : <Everything is OK> called in: <(null)()>:0 in function: <(null)> : <(null)>:0
+
+YOUR LIST: list_t (null) = [007BFEC8] created by (null)():
+size = [10]
+node_array = [012519B0]
+head_index = 0 head = 10928
+free_index = 1
+   INDEX      0      1      2      3      4      5      6      7      8      9
+   DATA  POISON   FREE   FREE   FREE   FREE   FREE   FREE   FREE   FREE   FREE
+   NEXT       0      2      3      4      5      6      7      8      9      9
+   PREV       0     -1     -1     -1     -1     -1     -1     -1     -1     -1
+
+*************************
+END OF OUR MESSAGE
+*************************
+
+
+*************************
+MEET ERROR IN YOUR PROGRAMM READ ALL INFORMATION DOWN
+*************************
+Error code: [0] : <Everything is OK> called in: <(null)()>:0 in function: <(null)> : <(null)>:0
+
+YOUR LIST: list_t (null) = [007BFEC8] created by (null)():
+size = [10]
+node_array = [012619B0]
+head_index = 0 head = 10928
+free_index = 1
+   INDEX      0      1      2      3      4      5      6      7      8      9
+   DATA  POISON   FREE   FREE   FREE   FREE   FREE   FREE   FREE   FREE   FREE
+   NEXT       0      2      3      4      5      6      7      8      9      9
+   PREV       0     -1     -1     -1     -1     -1     -1     -1     -1     -1
+
+*************************
+END OF OUR MESSAGE
+*************************
+
