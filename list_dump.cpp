@@ -79,18 +79,8 @@ void fwrite_graph_dump(const struct list_t* list)
     for (int size = 0; size < list -> size; size++)
     {
         fprintf(graph_file, "   %d -> %d;\n", size, list -> node_array[size].next);
-        if (DATA_IS_POISON(list -> node_array[size].data, POISON))
-        {
-            if (size == 0)
-                fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %s| {next = %d | prev = %d} \"];\n",
-                        size, size, "POISON", list -> node_array[size].next, list -> node_array[size].prev);
-            else
-                fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %s| {next = %d | prev = %d} \"];\n",
-                        size, size, "FREE", list -> node_array[size].next, list -> node_array[size].prev);
-        }
-        else
-            fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %d | {next = %d | prev = %d} \"];\n",
-                      size, size, list -> node_array[size].data, list -> node_array[size].next, list -> node_array[size].prev);
+        fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %d | {next = %d | prev = %d} \"];\n",
+                  size, size, list -> node_array[size].data, list -> node_array[size].next, list -> node_array[size].prev);
     }
 
     fprintf(graph_file, "}\n");
