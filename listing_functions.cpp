@@ -11,6 +11,10 @@ error_t list_init(struct list_t* list, int size)
     if (list == NULL)
         return NO_LIST_INITTED;
 
+    #ifdef LIST_DEBUG
+    list -> add_or_del_status = 0;
+    #endif
+
     list -> node_array = (node_t*)calloc(size, sizeof(node_t));
 
     if (list -> node_array == NULL)
@@ -88,6 +92,11 @@ error_t list_insert(struct list_t* list, int node, int data)
         return NOT_EXSIST_ELEM;
     }
 
+    #ifdef LIST_DEBUG
+    list -> add_or_del_status = 1;
+    list -> add_or_del_elem   = node;
+    #endif
+
     LIST_VERYFICATION(list);
 
     if (list -> node_array[list -> free].next == list -> free)
@@ -133,6 +142,11 @@ error_t list_delete(struct list_t* list, int node)
         FILL_DBG(NOT_EXSIST_ELEM);
         return NOT_EXSIST_ELEM;
     }
+
+    #ifdef LIST_DEBUG
+    list -> add_or_del_status = -1;
+    list -> add_or_del_elem   = node;
+    #endif
 
     LIST_VERYFICATION(list);
 

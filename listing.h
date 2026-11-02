@@ -50,6 +50,8 @@ struct list_t
         char* project_dir_path;
         char* log_dir_path;
         size_t dump_num;
+        int add_or_del_status;
+        int add_or_del_elem;
     #endif
     size_t head;
     size_t tail;

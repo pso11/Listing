@@ -1,5 +1,5 @@
-\\ норм верификатор
-\\ рид ми
+// норм верификатор
+// рид ми
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -136,6 +136,31 @@ void define_log_file(void)
 void fwrite_html_dump(const struct list_t* list, FILE* file)
 {
     fprintf(file, "<!DOCTYPE html>\n<html>\n<pre style = \"font-size: 20px;\">");
+
+    if (list -> add_or_del_status == 1)
+    {
+        fputc('\n', file);
+        fwrite_stars(25, file);
+        fprintf(file, "\nADD after %d \n", list -> add_or_del_elem);
+        fwrite_stars(25, file);
+        fputc('\n', file);
+    }
+    else if (list -> add_or_del_status == -1)
+    {
+        fputc('\n', file);
+        fwrite_stars(25, file);
+        fprintf(file, "\nDELETE %d \n", list -> add_or_del_elem);
+        fwrite_stars(25, file);
+        fputc('\n', file);
+    }
+    else
+    {
+        fputc('\n', file);
+        fwrite_stars(25, file);
+        fprintf(file, "\nINITED \n");
+        fwrite_stars(25, file);
+        fputc('\n', file);
+    }
 
     fprintf_list_data(list, file);
     fwrite_graph_dump(list);
