@@ -26,7 +26,9 @@ enum error_t
     ZERO_ELEM_DAMAGED         = 8,
     WRONG_PREV                = 9,
     WRONG_NEXT                = 10,
-    BAD_ALLOCATION            = 11
+    BAD_ALLOCATION            = 11,
+    IDX_MORE_THAN_SIZE        = 12,
+    NEGATIVE_IDX              = 13
 };
 
 struct node_t
@@ -72,6 +74,10 @@ struct list_t
     void fprintf_beautiful(FILE* file_name, const char* string);
     void fprintf_error_inf(const struct list_t* list, FILE* file);
     void fprintf_list_data(const struct list_t* list, FILE* file);
+    error_t node_veryficator(const struct list_t* list, int size);
+    void fprintf_node_and_edge(FILE* file, int size, const struct list_t* list,
+                               const char* edge_color, const char* label_color,
+                               const char* stroke_color, const char* fill_color, const char* line_status);
 
     struct error
     {
@@ -122,7 +128,6 @@ error_t list_destroy(struct list_t* list);
 error_t list_insert(struct list_t* list, int node, list_elem_t data);
 error_t list_delete(struct list_t* list, int node);
 error_t resize_up(struct list_t* list);
-error_t resize_down(struct list_t* list);
 int compare_doubles(double var1, double var2);
 
 const int INCREMENT = 2;

@@ -112,6 +112,7 @@ error_t list_insert(struct list_t* list, int node, int data)
 
     list -> free = free_head;
     list -> head = list -> node_array[0].next;
+    list -> tail = list -> node_array[0].prev;
 
     LIST_VERYFICATION(list);
 

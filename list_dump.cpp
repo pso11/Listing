@@ -1,4 +1,3 @@
-// норм верификатор
 // рид ми
 
 #include <stdio.h>
@@ -12,6 +11,8 @@
 #ifdef LIST_DEBUG
 error_t list_veryficator(struct list_t* list)
 {
+    error_t error_status = OK;
+
     if (list == NULL)
         return NO_LIST_INITTED;
 
@@ -25,6 +26,15 @@ error_t list_veryficator(struct list_t* list)
     {
         FILL_DBG(LIST_NULL_POINTER);
         return LIST_NULL_POINTER;
+    }
+
+    for (size_t i = 0; i < list -> size; i++)
+    {
+        if (error_status = node_veryficator(list, i))
+        {
+            FILL_DBG(error_status);
+            return error_status;
+        }
     }
 
     return OK;
@@ -63,7 +73,7 @@ void fwrite_txt_dump(const struct list_t* list, FILE* file)
     fprintf(file,"\nDUMP %d\n", list -> dump_num);
 
     fprintf_error_inf(list, file);
-
+    fprintf_list_data(list, file);
 
     fprintf_beautiful(file, "\nEND OF OUR MESSAGE\n");
     fputc('\n', file);
@@ -74,14 +84,46 @@ void fwrite_graph_dump(const struct list_t* list)
     FILE* graph_file = fopen("graphic_dump.txt", "w");
 
     fprintf(graph_file, "digraph List\n{\n");
-
     fprintf(graph_file, "rankdir = LR;\n");
+    // splines = ortho;\n
+    fprintf(graph_file, "0");
+    for (int size = 1; size < list -> size; size++)
+        fprintf(graph_file, " -> %d", size);
+    fprintf(graph_file, " [style=invis, weight=1000];");
+
     for (int size = 0; size < list -> size; size++)
     {
-        fprintf(graph_file, "   %d -> %d;\n", size, list -> node_array[size].next);
-        fprintf(graph_file, "   %d [shape = record, label = \" index = %d | data = %d | {next = %d | prev = %d} \"];\n",
-                  size, size, list -> node_array[size].data, list -> node_array[size].next, list -> node_array[size].prev);
+        if (node_veryficator(list, size))
+            fprintf_node_and_edge(graph_file, size, list, "#e90a0a", "#FFFFFF", "#d76767", "#700909", "dir = both");
+
+        else if (size == 0)
+            fprintf_node_and_edge(graph_file, size, list, "#000000", "#000000", "#000000", "#919191", "dir = both");
+
+        else if (DATA_IS_POISON(list -> node_array[size].data, POISON))
+            fprintf_node_and_edge(graph_file, size, list, "#57cc57", "#000000", "#083308", "#57cc57", "dir = forward");
+
+        else if (size == list -> tail)
+            fprintf_node_and_edge(graph_file, size, list, "#000000", "#000000", "#310431", "#c034c0", "dir = forward");
+
+        else if (size == list -> head)
+            fprintf_node_and_edge(graph_file, size, list, "#000000", "#000000", "#543a0a", "#FFA500", "dir = forward");
+
+        else
+            fprintf_node_and_edge(graph_file, size, list, "#000000", "#000000", "#083308", "#FFFFFF", "dir = both");
+
+        fflush(graph_file);
     }
+
+    fprintf(graph_file, "   head -> %d [color = \"#FFA500\"]; \n", list -> head);
+    fprintf(graph_file, "   head [style = filled, fillcolor = \"#FFA500\", color = \"#543a0a\", shape = record, label = \"HEAD\"];\n");
+
+    fprintf(graph_file, "   tail -> %d [color = \"#c034c0\"];\n", list -> tail);
+    fprintf(graph_file, "   tail [style = filled, fillcolor = \"#c034c0\", color = \"#543a0a\", shape = record, label = \"TAIL\"];\n");
+
+    fprintf(graph_file, "  free -> %d [color = \"#065906\"];\n", list -> free);
+    fprintf(graph_file, "  free [style = filled, fillcolor = \"#93e393\", color = \"#065906\", shape = record, label = \"FREE\"];\n");
+
+    fflush(graph_file);
 
     fprintf(graph_file, "}\n");
     fclose(graph_file);
@@ -162,12 +204,15 @@ void fwrite_html_dump(const struct list_t* list, FILE* file)
         fputc('\n', file);
     }
 
+    fprintf_error_inf(list, file);
     fprintf_list_data(list, file);
     fwrite_graph_dump(list);
 
     fputc('\n', file);
     fprintf(file, "Image:\n");
     fprintf(file, "<img src =\"grapic_dump_%d.png\">", list -> dump_num);
+    fprintf_beautiful(file, "\nEND OF OUR MESSAGE\n");
+    fputc('\n', file);
 
     fprintf(file, "</pre>\n</html>");
 }
@@ -183,7 +228,7 @@ void fprintf_beautiful(FILE* file, const char* string)
 
 void fprintf_error_inf(const struct list_t* list, FILE* file)
 {
-     struct error error_array[] =
+    struct error error_array[] =
     {
         {"Everything is OK", OK},
         {"NULL pointer of node_array", LIST_NULL_POINTER},
@@ -196,7 +241,9 @@ void fprintf_error_inf(const struct list_t* list, FILE* file)
         {"Zero element was damaged", ZERO_ELEM_DAMAGED},
         {"Wrong value of next member in node structure", WRONG_NEXT},
         {"Wrong value of prev member in node structure", WRONG_PREV},
-        {"Calloc didn't work", BAD_ALLOCATION}
+        {"Calloc didn't work", BAD_ALLOCATION},
+        {"Next or previous element index more than size of list",  IDX_MORE_THAN_SIZE},
+        {"Next or previous element index less than zero", NEGATIVE_IDX}
     };
     size_t structure = 0;
     while (structure < sizeof(error_array) / sizeof(error_array[0]))
@@ -215,11 +262,12 @@ void fprintf_list_data(const struct list_t* list, FILE* file)
 {
     fprintf(file, "YOUR LIST: list_t %s = [%p] created by %s():\n"
                   "size = [%d], node_array = [%p]\n"
-                  "head_index = %d head = %d\n"
+                  "head_index = %d\n"
+                  "tail_index = %d\n"
                   "free_index = %d\n"
                   "POISON = FREE = %d\n",
                    list -> val_name, list, list -> birth_function,
-                   list -> size, list -> node_array, list -> head, list -> node_array[list -> head].data, list -> free, POISON);
+                   list -> size, list -> node_array, list -> head, list -> tail, list -> free, POISON);
 
     fflush(file);
 
@@ -255,6 +303,33 @@ void fprintf_list_data(const struct list_t* list, FILE* file)
 
 }
 
+error_t node_veryficator(const struct list_t* list, int size)
+{
+    if (list -> node_array[size].next >= list -> size)
+        return IDX_MORE_THAN_SIZE;
+    if (list -> node_array[size].prev >= list -> size)
+        return IDX_MORE_THAN_SIZE;
+    if ((list -> node_array[size].prev) < 0 && (list -> node_array[size].data != POISON))
+        return NEGATIVE_IDX;
+    if ((list -> node_array[size].next) < 0 && (list -> node_array[size].data != POISON))
+        return NEGATIVE_IDX;
+    if ((list -> node_array[list -> node_array[size].next].prev != size) && list -> node_array[size].data != POISON)
+        return WRONG_NEXT;
+    if ((list -> node_array[list -> node_array[size].prev].next != size) && list -> node_array[size].data != POISON)
+        return WRONG_PREV;
+
+    return OK;
+}
+
+void fprintf_node_and_edge(FILE* file, int size, const struct list_t* list, const char* edge_color,
+                           const char* label_color, const char* stroke_color, const char* fill_color, const char* line_status)
+{
+    fprintf(file,  "   %d -> %d [%s, color = \"%s\"];\n", size, list -> node_array[size].next, line_status, edge_color);
+    fprintf(file,  "   %d [style = filled, fontcolor = \"%s\", fillcolor = \"%s\", color = \"%s\", shape = record, label = \" "
+                        "index = %d | data = %d | {next = %d | prev = %d} \"];\n",
+                        size, label_color, fill_color, stroke_color, size, list -> node_array[size].data,
+                        list -> node_array[size].next, list -> node_array[size].prev);
+}
 #endif
 
 
