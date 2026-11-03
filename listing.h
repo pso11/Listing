@@ -1,11 +1,11 @@
 #ifdef LIST_USE_INT
     typedef int list_elem_t;
-    #define SPECIFICATOR "%-5d"
+    #define SPECIFICATOR "d"
     #define POISON 10928
     #define DATA_IS_POISON(var1, var2) var1 == var2
 #elif LIST_USE_DOUBLE
     typedef double list_elem_t;
-    #define SPECIFICATOR "%-5lg"
+    #define SPECIFICATOR "lg"
     #define POISON 10928
     #define DATA_IS_POISON(var1, var2) compare_doubles(var1, var2)
 #else
@@ -28,7 +28,10 @@ enum error_t
     WRONG_NEXT                = 10,
     BAD_ALLOCATION            = 11,
     IDX_MORE_THAN_SIZE        = 12,
-    NEGATIVE_IDX              = 13
+    NEGATIVE_IDX              = 13,
+    WRONG_HEAD                = 14,
+    WRONG_TAIL                = 15,
+    WRONG_FREE                = 16
 };
 
 struct node_t
@@ -55,9 +58,9 @@ struct list_t
         int add_or_del_status;
         int add_or_del_elem;
     #endif
-    size_t head;
-    size_t tail;
-    size_t free;
+    int head;
+    int tail;
+    int free;
     int size;
     node_t* node_array;
 };
@@ -71,6 +74,9 @@ struct list_t
     void define_log_file(void);
     size_t define_run_number(const char* file_name);
     void fwrite_stars(size_t number, FILE* file);
+    void fprintf_invis_edges(FILE* file, const struct list_t* list);
+    void fprintf_head_tail(FILE* file, const struct list_t* list);
+    void fprintf_nodes(FILE* file, const struct list_t* list);
     void fprintf_beautiful(FILE* file_name, const char* string);
     void fprintf_error_inf(const struct list_t* list, FILE* file);
     void fprintf_list_data(const struct list_t* list, FILE* file);

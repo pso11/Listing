@@ -80,7 +80,7 @@ g++ -g -DLIST_DEBUG main.cpp listing_functions.cpp list_dump.cpp -o list.exe ^
 
 You have only this errors for your programm
 ```C
-struct error error_array[] =
+    struct error error_array[] =
     {
         {"Everything is OK", OK},
         {"NULL pointer of node_array", LIST_NULL_POINTER},
@@ -95,7 +95,10 @@ struct error error_array[] =
         {"Wrong value of prev member in node structure", WRONG_PREV},
         {"Calloc didn't work", BAD_ALLOCATION},
         {"Next or previous element index more than size of list",  IDX_MORE_THAN_SIZE},
-        {"Next or previous element index less than zero", NEGATIVE_IDX}
+        {"Next or previous element index less than zero", NEGATIVE_IDX},
+        {"Tail index more than size of list", WRONG_TAIL},
+        {"Head index more than size of list", WRONG_HEAD},
+        {"Free index more than size of list", WRONG_FREE}
     };
 ```
 ### DUMP FORMAT
@@ -118,7 +121,7 @@ struct error error_array[] =
 
 • **Code Architect & Bug Factory: [[My GitHub link](https://github.com)]**
 
-• **Code reviewer & motivator: [sizeof.lj.ru]**
+• **Code reviewer & motivator: [[sizeof.lj.ru](https://sizeof.livejournal.com)]**
 
 • **Moral Support & Mental Stability: My playlist on Spotify**
 

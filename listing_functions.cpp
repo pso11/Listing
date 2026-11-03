@@ -73,7 +73,7 @@ error_t list_destroy(struct list_t* list)
     return error_status;
 }
 
-error_t list_insert(struct list_t* list, int node, int data)
+error_t list_insert(struct list_t* list, int node, list_elem_t data)
 {
     error_t error_status = OK;
 
