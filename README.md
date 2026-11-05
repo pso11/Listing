@@ -25,7 +25,7 @@ g++ -g -DLIST_USE_INT -DLIST_DEBUG main.cpp listing_functions.cpp list_dump.cpp 
 .\list.exe
 ```
 
-3. Run the bat file
+3. Run bat file
 ```C
 PS D:\C\Listing> .\list.bat
 ```
@@ -76,7 +76,7 @@ g++ -g -DLIST_DEBUG main.cpp listing_functions.cpp list_dump.cpp -o list.exe ^
 
 ## DEBUG MODE
 
-### ERROR CODES
+### ERROR CODES AND USAGE
 
 You have only this errors for your programm
 ```C
@@ -101,6 +101,39 @@ You have only this errors for your programm
         {"Free index more than size of list", WRONG_FREE}
     };
 ```
+
+### EXAMPLE OF MAIN
+```C
+int main(void)
+{
+    error_t error_status = OK;
+    struct list_t list = {};
+    DUMP_INIT(list);
+    DEFINE_LOG_FILE();
+
+    error_status = list_init(&list, 5);
+    ASSERT(list, error_status);
+    list_dump(&list);
+
+    error_status = list_insert(&list, 0, 20);
+    ASSERT(list, error_status);
+    list_dump(&list);
+
+    error_status = list_insert(&list, 1, 30);
+    ASSERT(list, error_status);
+    list_dump(&list);
+
+    error_status = list_insert(&list, 2, 40);
+    ASSERT(list, error_status);
+    list_dump(&list);
+
+    error_status = list_destroy(&list);
+    ASSERT(list, error_status);
+
+    return 0;
+}
+```
+
 ### DUMP FORMAT
 
  You can call **list_dump(struct list_t* list)** function -> go to LOG folder -> go to your last run programme folder -> look all dumps (**html** or **txt**)
@@ -111,13 +144,61 @@ You have only this errors for your programm
 
 ![alt text](image-2.png)
 
-**EXAMPLE OF TXT LOG**
+### EXAMPLE OF TXT LOG
 ![alt text](image-3.png)
 
-**EXAMPLE OF HTML LOG**
+### EXAMPLE OF HTML LOG
+
+<details>
+<summary>1. Damaged element with NEXT < 0</summary>
+
 ![alt text](image-4.png)
 
-### **🏆 Hall of Fame**
+</details>
+
+<details>
+<summary>2. Damaged element with PREV < 0</summary>
+
+![alt text](image-5.png)
+
+</details>
+
+<details>
+<summary>3. Damaged element with PREV > SIZE</summary>
+
+![alt text](image-6.png)
+
+</details>
+
+<details>
+<summary>4. Damaged element with NEXT > SIZE</summary>
+
+![alt text](image-7.png)
+
+</details>
+
+<details>
+<summary>5. Damaged element with wrong NEXT in range of list</summary>
+
+![alt text](image-9.png)
+
+</details>
+
+<details>
+<summary>6. Damaged element with wrong PREV in range of list</summary>
+
+![alt text](image-8.png)
+
+</details>
+
+<details>
+<summary>7. Damaged list with 2 circular buffers </summary>
+
+![alt text](image-10.png)
+
+</details>
+
+### **Hall of Fame**
 
 • **Code Architect & Bug Factory: [[My GitHub link](https://github.com)]**
 

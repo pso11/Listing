@@ -6,11 +6,12 @@
 #elif LIST_USE_DOUBLE
     typedef double list_elem_t;
     #define SPECIFICATOR "lg"
-    #define POISON 10928
+    #define POISON 10928.0
     #define DATA_IS_POISON(var1, var2) compare_doubles(var1, var2)
 #else
     #error "Error: Neither LIST_USE_INT nor LIST_USE_DOUBLE is defined!"
 #endif
+
 #define DELTA 10e-6
 
 enum error_t
@@ -31,7 +32,8 @@ enum error_t
     NEGATIVE_IDX              = 13,
     WRONG_HEAD                = 14,
     WRONG_TAIL                = 15,
-    WRONG_FREE                = 16
+    WRONG_FREE                = 16,
+    LOOP_EXISTS               = 17
 };
 
 struct node_t
@@ -62,6 +64,7 @@ struct list_t
     int tail;
     int free;
     int size;
+    size_t used_nodes;
     node_t* node_array;
 };
 
@@ -83,7 +86,8 @@ struct list_t
     error_t node_veryficator(const struct list_t* list, int size);
     void fprintf_node_and_edge(FILE* file, int size, const struct list_t* list,
                                const char* edge_color, const char* label_color,
-                               const char* stroke_color, const char* fill_color, const char* line_status);
+                               const char* stroke_color, const char* fill_color,
+                               const char* line_status, double penwidth);
 
     struct error
     {

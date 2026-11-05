@@ -40,6 +40,7 @@ error_t list_init(struct list_t* list, int size)
     list -> tail       = 0;
     list -> free       = 1;
     list -> size       = size;
+    list -> used_nodes = 0;
 
     LIST_VERYFICATION(list);
 
@@ -52,6 +53,8 @@ error_t list_destroy(struct list_t* list)
 
     if (list == NULL)
         return NO_LIST_INITTED;
+
+    LIST_VERYFICATION(list);
 
     for (int i = 0; i < list -> size; i++)
     {
@@ -98,6 +101,8 @@ error_t list_insert(struct list_t* list, int node, list_elem_t data)
     #endif
 
     LIST_VERYFICATION(list);
+
+    (list -> used_nodes)++;
 
     if (list -> node_array[list -> free].next == list -> free)
         resize_up(list);
@@ -150,6 +155,8 @@ error_t list_delete(struct list_t* list, int node)
     #endif
 
     LIST_VERYFICATION(list);
+
+    (list -> used_nodes)--;
 
     list -> node_array[node].data = POISON;
     list -> node_array[list -> node_array[node].prev].next = list -> node_array[node].next;
