@@ -138,63 +138,63 @@ int main(void)
 
  You can call **list_dump(struct list_t* list)** function -> go to LOG folder -> go to your last run programme folder -> look all dumps (**html** or **txt**)
 
-![alt text](image.png)
+![alt text](./README_img/image.png)
 
-![alt text](image-1.png)
+![alt text](./README_img/image-1.png)
 
-![alt text](image-2.png)
+![alt text](./README_img/image-2.png)
 
 ### EXAMPLE OF TXT LOG
-![alt text](image-3.png)
+![alt text](./README_img/image-3.png)
 
 ### EXAMPLE OF HTML LOG
 
 <details>
 <summary>1. Damaged element with NEXT < 0</summary>
 
-![alt text](image-4.png)
+![alt text](./README_img/image-4.png)
 
 </details>
 
 <details>
 <summary>2. Damaged element with PREV < 0</summary>
 
-![alt text](image-5.png)
+![alt text](./README_img/image-5.png)
 
 </details>
 
 <details>
 <summary>3. Damaged element with PREV > SIZE</summary>
 
-![alt text](image-6.png)
+![alt text](./README_img/image-6.png)
 
 </details>
 
 <details>
 <summary>4. Damaged element with NEXT > SIZE</summary>
 
-![alt text](image-7.png)
+![alt text](./README_img/image-7.png)
 
 </details>
 
 <details>
 <summary>5. Damaged element with wrong NEXT in range of list</summary>
 
-![alt text](image-9.png)
+![alt text](./README_img/image-9.png)
 
 </details>
 
 <details>
 <summary>6. Damaged element with wrong PREV in range of list</summary>
 
-![alt text](image-8.png)
+![alt text](./README_img/image-8.png)
 
 </details>
 
 <details>
 <summary>7. Damaged list with 2 circular buffers </summary>
 
-![alt text](image-10.png)
+![alt text](./README_img/image-10.png)
 
 </details>
 
