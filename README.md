@@ -155,7 +155,9 @@ int main(void)
 
 >[!NOTE]
 >If next or prev is correct there're will be black double arrow
+
 >If next is wrong there're will be red forward arrow from wrong node to the wrong next node
+
 >If prev is wrong there're will be red forward arrow from wrong next to the wrong node
 
 <details>
