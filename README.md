@@ -1,6 +1,6 @@
 # DOUBLE-LINKED CIRCULAR LIST
 
-### This program simulates the work of a double-linked circular list with fictional element based on **indexes, but not pointers**
+### This program simulates the work of a double-linked circular list with fictional element based on **indexes,. not pointers**
 
 ## INSTRUCTIONS
 
@@ -100,7 +100,8 @@ You have only this errors for your programm
         {"Next or previous element index less than zero", NEGATIVE_IDX},
         {"Tail index more than size of list", WRONG_TAIL},
         {"Head index more than size of list", WRONG_HEAD},
-        {"Free index more than size of list", WRONG_FREE}
+        {"Free index more than size of list", WRONG_FREE},
+        {"There's a loop in youer circular list", LOOP_EXISTS}
     };
 ```
 
@@ -151,6 +152,11 @@ int main(void)
 ![alt text](./README_img/image-3.png)
 
 ### EXAMPLE OF HTML LOG
+
+>[!NOTE]
+>If next or prev is correct there're will be black double arrow
+>If next is wrong there're will be red forward arrow from wrong node to the wrong next node
+>If prev is wrong there're will be red forward arrow from wrong next to the wrong node
 
 <details>
 <summary>1. Damaged element with NEXT < 0</summary>
