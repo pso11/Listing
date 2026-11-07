@@ -46,6 +46,7 @@ PS D:\C\Listing> .\list.bat
 
 <details>
 <summary>EXAMPLE:</summary>
+
 ```C
 g++ -g -DLIST_USE_INT -DLIST_DEBUG main.cpp listing_functions.cpp list_dump.cpp -o list.exe ^
 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline -Wunreachable-code ^
@@ -62,6 +63,7 @@ g++ -g -DLIST_USE_INT -DLIST_DEBUG main.cpp listing_functions.cpp list_dump.cpp 
 
 <details>
 <summary>EXAMPLE:</summary>
+
 ```C
 g++ -g -DLIST_DEBUG main.cpp listing_functions.cpp list_dump.cpp -o list.exe ^
 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline -Wunreachable-code ^
@@ -145,6 +147,7 @@ int main(void)
 ![alt text](./README_img/image-2.png)
 
 ### EXAMPLE OF TXT LOG
+
 ![alt text](./README_img/image-3.png)
 
 ### EXAMPLE OF HTML LOG
